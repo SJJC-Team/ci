@@ -103,8 +103,8 @@ jobs:
       fail-fast: false
       matrix:
         swift-config:
-          - { image: "swift:5.10-jammy", "build-mode": "debug" }
           - { image: "swift:6.0-noble", "build-mode": "debug" }
+          - { image: "swift:6.0-noble", "build-mode": "release" }
           - { image: "swift:6.1-noble", "build-mode": "debug" }
           - { image: "swift:6.1-noble", "build-mode": "release" }
     runs-on: ubuntu-latest
