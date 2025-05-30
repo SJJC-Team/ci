@@ -173,6 +173,7 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v4
       - name: Check Swift compatibility
+        working-directory: ${{ inputs.work_dir }}
         id: swift-check
         uses: vapor/ci/.github/actions/check-compatible-swift@main
         with:
