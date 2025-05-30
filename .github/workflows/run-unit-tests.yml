@@ -120,12 +120,6 @@ jobs:
       - name: Check out code
         if: ${{ matrix.swift-config.build-mode == 'debug' || inputs.with_release_mode_testing }}
         uses: actions/checkout@v4
-      - name: Check Swift compatibility
-        id: swift-check
-        if: ${{ matrix.swift-config.build-mode == 'debug' || inputs.with_release_mode_testing }}
-        uses: vapor/ci/.github/actions/check-compatible-swift@main
-        with:
-          package_root: ${{ inputs.package_root }}
       - name: Build
         working-directory: ${{ inputs.work_dir }}
         run: |
