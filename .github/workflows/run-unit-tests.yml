@@ -7,6 +7,11 @@ on:
         required: false
         default: ''
         description: "Specifies a subpath of the checkout to run tests and upload coverage from."
+      only_build:
+        type: boolean
+        required: false
+        default: true
+        description: "True means only build, false means run test then."
       test_filter:
         type: string
         required: false
@@ -115,8 +120,12 @@ jobs:
         uses: vapor/ci/.github/actions/check-compatible-swift@main
         with:
           package_root: ${{ inputs.package_root }}
+      - name: Build
+        run: |
+          swift build \
+            -c ${{ matrix.swift-config.build-mode }}
       - name: Run unit tests
-        if: ${{ steps.swift-check.outputs.swift-compatible == 'true' && (matrix.swift-config.build-mode == 'debug' || inputs.with_release_mode_testing) }}
+        if: ${{ !inputs.only_build && steps.swift-check.outputs.swift-compatible == 'true' && (matrix.swift-config.build-mode == 'debug' || inputs.with_release_mode_testing) }}
         run: |
           SWIFT_DETERMINISTIC_HASHING=1 \
           swift test \
@@ -160,8 +169,11 @@ jobs:
         uses: vapor/ci/.github/actions/check-compatible-swift@main
         with:
           package_root: ${{ inputs.package_root }}
+      - name: Build
+        run: |
+          swift build
       - name: Run unit tests
-        if: ${{ steps.swift-check.outputs.swift-compatible == 'true' }}
+        if: ${{ !inputs.only_build && steps.swift-check.outputs.swift-compatible == 'true' }}
         env:
           WITH_TSAN_MACOS: ${{ (inputs.with_tsan && matrix.macos-version != 'macos-14') && '--sanitize=thread' || '' }}
         run: |
