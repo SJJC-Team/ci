@@ -161,7 +161,7 @@ jobs:
           swift build \
             -c ${{ matrix.swift-config.build-mode }}
       - name: Run unit tests
-        if: ${{ (inputs.with_pg_test || !inputs.only_build) && steps.swift-check.outputs.swift-compatible == 'true' && (matrix.swift-config.build-mode == 'debug' || inputs.with_release_mode_testing) }}
+        if: ${{ (inputs.with_pg_test || !inputs.only_build) && (matrix.swift-config.build-mode == 'debug' || inputs.with_release_mode_testing) }}
         working-directory: ${{ inputs.work_dir }}
         run: |
           SWIFT_DETERMINISTIC_HASHING=1 \
@@ -175,7 +175,7 @@ jobs:
             ${TEST_FILTER} \
             ${EXTRA_FLAGS}
       - name: Upload coverage data
-        if: ${{ inputs.with_coverage && (steps.swift-check.outputs.swift-compatible == 'true') && (matrix.swift-config.build-mode == 'debug' || inputs.with_release_mode_testing) }}
+        if: ${{ inputs.with_coverage && (matrix.swift-config.build-mode == 'debug' || inputs.with_release_mode_testing) }}
         uses: vapor/swift-codecov-action@v0.3
         with:
           codecov_token:    ${{ secrets.CODECOV_TOKEN || '' }}
@@ -206,7 +206,7 @@ jobs:
         run: |
           swift build
       - name: Run unit tests
-        if: ${{ !inputs.only_build && steps.swift-check.outputs.swift-compatible == 'true' }}
+        if: ${{ !inputs.only_build }}
         working-directory: ${{ inputs.work_dir }}
         env:
           WITH_TSAN_MACOS: ${{ (inputs.with_tsan && matrix.macos-version != 'macos-14') && '--sanitize=thread' || '' }}
@@ -219,7 +219,7 @@ jobs:
             ${TEST_FILTER} \
             ${EXTRA_FLAGS}
       - name: Upload coverage data
-        if: ${{ (steps.swift-check.outputs.swift-compatible == 'true') && inputs.with_coverage }}
+        if: ${{ inputs.with_coverage }}
         uses: vapor/swift-codecov-action@v0.3
         with:
           codecov_token:    ${{ secrets.CODECOV_TOKEN || '' }}
