@@ -221,6 +221,7 @@ jobs:
         working-directory: ${{ inputs.work_dir }}
         env:
           WITH_TSAN_MACOS: ${{ (inputs.with_tsan && matrix.macos-version != 'macos-14') && '--sanitize=thread' || '' }}
+          GITHUB_PG_TESTING_HOST: "postgres"
         run: |
           SWIFT_DETERMINISTIC_HASHING=1 \
           swift test \
