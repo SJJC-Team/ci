@@ -1,6 +1,7 @@
 #!/bin/bash
 
-LABEL=$1
+appName=$1
+LABEL=$2
 
 set - e
 
@@ -64,7 +65,7 @@ OUTPUT="$name-${OS}-${ARCH}-${LABEL}.tar.gz"
 
 mkdir -p release-ubuntu/module/bundle
 cp configure.yaml release-ubuntu/module/configure.yaml
-cp .build/release/App release-ubuntu/module/bundle/App
+cp .build/release/"${appName}" release-ubuntu/module/bundle/"${appName}"
 cp -r .build/release/*.resources release-ubuntu/module/bundle/
 cp pm2.config.json release-ubuntu/module/bundle/pm2.config.json
-tar -czvf release-ubuntu/$OUTPUT -C release-ubuntu module/
+tar -czvf release-ubuntu/"${OUTPUT}" -C release-ubuntu module/

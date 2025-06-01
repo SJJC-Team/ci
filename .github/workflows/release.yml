@@ -8,7 +8,12 @@ on:
         type: string
         required: false
         default: "."
-        description: Release working directory
+        description: "Release working directory"
+      app_name:
+        type: string
+        required: false
+        default: "App"
+        description: "App name used to package and release"
     secrets:
       RELEASE_ACCESS:
         required: true
@@ -46,10 +51,10 @@ jobs:
           cp .ci/.github/workflows/macos/release.sh ./release.sh
           chmod +x ./release.sh
 
-      - name: Build and package manager
+      - name: Build and package
         working-directory: ${{ inputs.work_dir }}
         run: |
-          ./release.sh xcode-${{ matrix.xcode-version }}
+          ./release.sh ${{ inputs.app_name }} xcode-${{ matrix.xcode-version }}
 
       - name: Upload binaries to GitHub Release
         uses: softprops/action-gh-release@v2
@@ -85,10 +90,10 @@ jobs:
           cp .ci/.github/workflows/ubuntu/release.sh ./release.sh
           chmod +x ./release.sh
 
-      - name: Build and package App
+      - name: Build and package
         working-directory: ${{ inputs.work_dir }}
         run: |
-          ./release.sh swift-${{ matrix.swift_version }}
+          ./release.sh ${{ inputs.app_name }} swift-${{ matrix.swift_version }}
 
       - name: Upload binaries to GitHub Release
         uses: softprops/action-gh-release@v2

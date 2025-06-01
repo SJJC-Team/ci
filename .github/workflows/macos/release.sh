@@ -1,6 +1,7 @@
 #!/bin/bash
 
-LABEL=$1
+appName=$1
+LABEL=$2
 
 set - e
 
@@ -64,7 +65,7 @@ OUTPUT="$name-${OS}-${ARCH}-${LABEL}.tar.gz"
 
 sudo mkdir -p release-macos/module/bundle
 sudo cp configure.yaml release-macos/module/configure.yaml
-sudo cp .build/release/App release-macos/module/bundle/App
+sudo cp .build/release/"${appName}" release-macos/module/bundle/"${appName}"
 sudo cp -r .build/release/*.bundle release-macos/module/bundle/
 sudo cp pm2.config.json release-macos/module/bundle/pm2.config.json
-sudo tar -czvf release-macos/$OUTPUT -C release-macos module/
+sudo tar -czvf release-macos/"${OUTPUT}" -C release-macos module/
