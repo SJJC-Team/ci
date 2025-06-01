@@ -51,7 +51,7 @@ jobs:
           cp .ci/.github/workflows/macos/release.sh ./release.sh
           chmod +x ./release.sh
 
-      - name: Build and package
+      - name: Build and package ${{ inputs.app_name }}
         working-directory: ${{ inputs.work_dir }}
         run: |
           ./release.sh ${{ inputs.app_name }} xcode-${{ matrix.xcode-version }}
@@ -90,7 +90,7 @@ jobs:
           cp .ci/.github/workflows/ubuntu/release.sh ./release.sh
           chmod +x ./release.sh
 
-      - name: Build and package
+      - name: Build and package ${{ inputs.app_name }}
         working-directory: ${{ inputs.work_dir }}
         run: |
           ./release.sh ${{ inputs.app_name }} swift-${{ matrix.swift_version }}
