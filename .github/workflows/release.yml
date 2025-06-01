@@ -5,6 +5,7 @@ on:
   workflow_call:
     inputs:
       work_dir:
+        type: string
         required: false
         default: "."
         description: Release working directory
@@ -35,10 +36,9 @@ jobs:
         
       - name: Download shared CI release script
         uses: actions/checkout@v4
-        working-directory: ${{ inputs.work_dir }}
-        with: 
+        with:
           repository: SJJC-Team/ci
-          path: .ci
+          path: ${{ inputs.work_dir }}/.ci
           
       - name: Make release script executable
         working-directory: ${{ inputs.work_dir }}
@@ -53,12 +53,11 @@ jobs:
 
       - name: Upload binaries to GitHub Release
         uses: softprops/action-gh-release@v2
-        working-directory: ${{ inputs.work_dir }}
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_ACCESS }}
         with:
           files: |
-            release-macos/*.tar.gz
+            ${{ inputs.work_dir }}/release-macos/*.tar.gz
 
   ubuntu-release:
     name: Ubuntu-Release
@@ -76,10 +75,9 @@ jobs:
 
       - name: Download shared CI release script
         uses: actions/checkout@v4
-        working-directory: ${{ inputs.work_dir }}
         with:
           repository: SJJC-Team/ci
-          path: .ci
+          path: ${{ inputs.work_dir }}/.ci
           
       - name: Make release script executable
         working-directory: ${{ inputs.work_dir }}
@@ -94,9 +92,8 @@ jobs:
 
       - name: Upload binaries to GitHub Release
         uses: softprops/action-gh-release@v2
-        working-directory: ${{ inputs.work_dir }}
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_ACCESS }}
         with:
           files: |
-            release-ubuntu/*.tar.gz
+            ${{ inputs.work_dir }}/release-ubuntu/*.tar.gz
