@@ -32,6 +32,11 @@ on:
         required: false
         default: "password"
         description: "Test pg password"
+      with_pg_port:
+        type: string
+        required: false
+        default: "5432"
+        description: "Test pg port"
       package_root:
         type: string
         required: false
@@ -141,19 +146,26 @@ jobs:
     runs-on: ubuntu-latest
     container: ${{ matrix.swift-config.image }}
     timeout-minutes: 60
+    
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: ${{ inputs.with_pg_password }}
+          POSTGRES_USER: ${{ inputs.with_pg_user }}
+          POSTGRES_DB: ${{ inputs.with_pg_database }}
+        ports:
+          - ${{ inputs.with_pg_port }}:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - name: Check out code
         if: ${{ matrix.swift-config.build-mode == 'debug' || inputs.with_release_mode_testing }}
         uses: actions/checkout@v4
-        
-      - name: Setup PostgreSQL
-        if: ${{ inputs.with_pg_test }}
-        uses: Harmon758/postgresql-action@v1.0.0
-        with:
-          postgresql version: ${{ inputs.with_pg_version }}
-          postgresql db: ${{ inputs.with_pg_database }}
-          postgresql user: ${{ inputs.with_pg_user }}
-          postgresql password: ${{ inputs.with_pg_password }}
         
       - name: Build
         working-directory: ${{ inputs.work_dir }}
