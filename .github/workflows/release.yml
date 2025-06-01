@@ -1,0 +1,99 @@
+name: Release Tag Workflow
+description: Build and package a Swift project for release.
+
+on:
+  workflow_call:
+    inputs:
+      work_dir:
+        required: false
+        default: "."
+        description: Release working directory
+
+jobs:
+  macos-release:
+    name: macOS-Release
+    strategy:
+      matrix:
+        include:
+          - macos-version: macos-14
+            xcode-version: latest-stable
+          - macos-version: macos-15
+            xcode-version: latest-stable
+    runs-on: ${{ matrix.macos-version }}
+
+    steps:
+      - name: Select appropriate Xcode version
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: ${{ matrix.xcode-version }}
+          
+      - name: Check out code
+        uses: actions/checkout@v4
+        
+      - name: Download shared CI release script
+        uses: actions/checkout@v4
+        working-directory: ${{ inputs.work_dir }}
+        with: 
+          repository: SJJC-Team/ci
+          path: .ci
+          
+      - name: Make release script executable
+        working-directory: ${{ inputs.work_dir }}
+        run: |
+          cp .ci/.github/workflows/macos/release.sh ./release.sh
+          chmod +x ./release.sh
+
+      - name: Build and package manager
+        working-directory: ${{ inputs.work_dir }}
+        run: |
+          ./release.sh xcode-${{ matrix.xcode-version }}
+
+      - name: Upload binaries to GitHub Release
+        uses: softprops/action-gh-release@v2
+        working-directory: ${{ inputs.work_dir }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.CLWANG_RELEASE_ACCESS }}
+        with:
+          files: |
+            release/*.tar.gz
+
+  ubuntu-release:
+    name: Ubuntu-Release
+    runs-on: ${{ matrix.os }}
+    container: swift:${{ matrix.swift_version }}
+
+    strategy:
+      matrix:
+        os: ["ubuntu-22.04", "ubuntu-24.04"]
+        swift_version: ["6.0", "6.1"]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download shared CI release script
+        uses: actions/checkout@v4
+        working-directory: ${{ inputs.work_dir }}
+        with:
+          repository: SJJC-Team/ci
+          path: .ci
+          
+      - name: Make release script executable
+        working-directory: ${{ inputs.work_dir }}
+        run: |
+          cp .ci/.github/workflows/ubuntu/release.sh ./release.sh
+          chmod +x ./release.sh
+
+      - name: Build and package App
+        working-directory: ${{ inputs.work_dir }}
+        run: |
+          ./release.sh swift-${{ matrix.swift_version }}
+
+      - name: Upload binaries to GitHub Release
+        uses: softprops/action-gh-release@v2
+        working-directory: ${{ inputs.work_dir }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.CLWANG_RELEASE_ACCESS }}
+        with:
+          files: |
+            release/*.tar.gz
