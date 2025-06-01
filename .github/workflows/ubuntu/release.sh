@@ -62,9 +62,9 @@ swift build --static-swift-stdlib -c release
 ARCH=$(uname -m)
 OUTPUT="$name-${OS}-${ARCH}-${LABEL}.tar.gz"
 
-mkdir -p release/module/bundle
-cp configure.yaml release/module/configure.yaml
-cp .build/release/App release/module/bundle/App
-cp -r .build/release/*.resources release/module/bundle/
-cp pm2.config.json release/module/bundle/pm2.config.json
-tar -czvf release/$OUTPUT -C release module/
+mkdir -p release-ubuntu/module/bundle
+cp configure.yaml release-ubuntu/module/configure.yaml
+cp .build/release/App release-ubuntu/module/bundle/App
+cp -r .build/release/*.resources release-ubuntu/module/bundle/
+cp pm2.config.json release-ubuntu/module/bundle/pm2.config.json
+tar -czvf release/$OUTPUT -C release-ubuntu module/
