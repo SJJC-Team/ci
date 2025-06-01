@@ -67,4 +67,4 @@ sudo cp configure.yaml release-macos/module/configure.yaml
 sudo cp .build/release/App release-macos/module/bundle/App
 sudo cp -r .build/release/*.bundle release-macos/module/bundle/
 sudo cp pm2.config.json release-macos/module/bundle/pm2.config.json
-sudo tar -czvf release/$OUTPUT -C release-macos module/
+sudo tar -czvf release-macos/$OUTPUT -C release-macos module/

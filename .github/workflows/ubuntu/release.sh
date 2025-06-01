@@ -67,4 +67,4 @@ cp configure.yaml release-ubuntu/module/configure.yaml
 cp .build/release/App release-ubuntu/module/bundle/App
 cp -r .build/release/*.resources release-ubuntu/module/bundle/
 cp pm2.config.json release-ubuntu/module/bundle/pm2.config.json
-tar -czvf release/$OUTPUT -C release-ubuntu module/
+tar -czvf release-ubuntu/$OUTPUT -C release-ubuntu module/
