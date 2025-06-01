@@ -7,6 +7,31 @@ on:
         required: false
         default: '.'
         description: "Your main work directory."
+      with_pg_test:
+        type: boolean
+        required: false
+        default: true
+        description: "Lunch PostgreSQL service for testing"
+      with_pg_version:
+        type: string
+        required: false
+        default: "17.2"
+        description: "Test pg version"
+      with_pg_database:
+        type: string
+        required: false
+        default: "postgres"
+        description: "Test pg database"
+      with_pg_user:
+        type: string
+        required: false
+        default: "postgres"
+        description: "Test pg user"
+      with_pg_password:
+        type: string
+        required: false
+        default: "password"
+        description: "Test pg password"
       package_root:
         type: string
         required: false
@@ -120,13 +145,23 @@ jobs:
       - name: Check out code
         if: ${{ matrix.swift-config.build-mode == 'debug' || inputs.with_release_mode_testing }}
         uses: actions/checkout@v4
+        
+      - name: Setup PostgreSQL
+        if: ${{ inputs.with_pg_test }}
+        uses: Harmon758/postgresql-action@v1.0.0
+        with:
+          postgresql version: ${{ inputs.with_pg_version }}
+          postgresql db: ${{ inputs.with_pg_database }}
+          postgresql user: ${{ inputs.with_pg_user }}
+          postgresql password: ${{ inputs.with_pg_password }}
+        
       - name: Build
         working-directory: ${{ inputs.work_dir }}
         run: |
           swift build \
             -c ${{ matrix.swift-config.build-mode }}
       - name: Run unit tests
-        if: ${{ !inputs.only_build && steps.swift-check.outputs.swift-compatible == 'true' && (matrix.swift-config.build-mode == 'debug' || inputs.with_release_mode_testing) }}
+        if: ${{ (inputs.with_pg_test || !inputs.only_build) && steps.swift-check.outputs.swift-compatible == 'true' && (matrix.swift-config.build-mode == 'debug' || inputs.with_release_mode_testing) }}
         working-directory: ${{ inputs.work_dir }}
         run: |
           SWIFT_DETERMINISTIC_HASHING=1 \
