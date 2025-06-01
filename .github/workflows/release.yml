@@ -8,6 +8,9 @@ on:
         required: false
         default: "."
         description: Release working directory
+    secrets:
+      RELEASE_ACCESS:
+        required: true
 
 jobs:
   macos-release:
@@ -52,7 +55,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         working-directory: ${{ inputs.work_dir }}
         env:
-          GITHUB_TOKEN: ${{ secrets.CLWANG_RELEASE_ACCESS }}
+          GITHUB_TOKEN: ${{ secrets.RELEASE_ACCESS }}
         with:
           files: |
             release-macos/*.tar.gz
@@ -93,7 +96,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         working-directory: ${{ inputs.work_dir }}
         env:
-          GITHUB_TOKEN: ${{ secrets.CLWANG_RELEASE_ACCESS }}
+          GITHUB_TOKEN: ${{ secrets.RELEASE_ACCESS }}
         with:
           files: |
             release-ubuntu/*.tar.gz
