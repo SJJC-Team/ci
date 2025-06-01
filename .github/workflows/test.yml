@@ -35,4 +35,4 @@ jobs:
         # Runs a script that creates a PostgreSQL table, populates
         # the table with data, and then retrieves the data
         run: |
-          PGPASSWORD=postgres psql -h localhost -U postgres -d postgres -p 5432
+          PGPASSWORD=postgres psql -h localhost -U postgres -d postgres -p 5432 -c "select 1"
