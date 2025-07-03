@@ -113,7 +113,6 @@ env:
   WITH_TSAN: ${{ inputs.with_tsan && '--sanitize=thread' || '' }}
   WARNINGS_AS_ERRORS: ${{ inputs.warnings_as_errors && '-Xswiftc -warnings-as-errors' || '' }}
   TEST_FILTER:  ${{ inputs.test_filter != '' && format('--filter={0}', inputs.test_filter) || '' }}
-  WITH_COVERAGE: ${{ inputs.with_coverage && '--enable-code-coverage' || '' }}
   IOS_SCHEME_NAME: ${{ inputs.ios_scheme_name }}
   IOS_XCODEBUILD_ACTION: ${{ inputs.ios_xcodebuild_action }}
 
@@ -186,13 +185,6 @@ jobs:
             ${WITH_COVERAGE} \
             ${TEST_FILTER} \
             ${EXTRA_FLAGS}
-      - name: Upload coverage data
-        if: ${{ inputs.with_coverage && (matrix.swift-config.build-mode == 'debug' || inputs.with_release_mode_testing) }}
-        uses: vapor/swift-codecov-action@v0.3
-        with:
-          codecov_token:    ${{ secrets.CODECOV_TOKEN || '' }}
-          package_path:     ${{ inputs.package_root }}
-          build_parameters: -c ${{ matrix.swift-config.build-mode }} ${{ inputs.extra_flags }}
 
   macos-unit:
     if: ${{ !(github.event.pull_request.draft || false) }}
@@ -230,13 +222,6 @@ jobs:
             ${WITH_COVERAGE} \
             ${TEST_FILTER} \
             ${EXTRA_FLAGS}
-      - name: Upload coverage data
-        if: ${{ inputs.with_coverage }}
-        uses: vapor/swift-codecov-action@v0.3
-        with:
-          codecov_token:    ${{ secrets.CODECOV_TOKEN || '' }}
-          package_path:     ${{ inputs.package_root }}
-          build_parameters: ${{ inputs.extra_flags }}
           
   ios-unit:
     if: ${{ !(github.event.pull_request.draft || false) && inputs.ios_scheme_name != '' }}
