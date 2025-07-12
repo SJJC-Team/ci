@@ -143,7 +143,6 @@ jobs:
         if: ${{ inputs.with_pg_configs }}
         shell: bash
         run: |
-            pg_ctl --version
             cp .ci/.github/workflows/postgres.sh ./postgres.sh
             chmod +x ./postgres.sh
             
@@ -209,6 +208,7 @@ jobs:
         if: ${{ inputs.with_pg_configs }}
         shell: bash
         run: |
+            brew install postgresql@17
             cp .ci/.github/workflows/postgres.sh ./postgres.sh
             chmod +x ./postgres.sh
             
