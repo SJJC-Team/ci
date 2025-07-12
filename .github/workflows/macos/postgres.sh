@@ -33,9 +33,20 @@ for cfg in "$@"; do
     data_dir="pg_${PORT}"
     conf_file="$data_dir/postgresql.conf"
     
+    function on_fail {
+        echo "⚠️ PostgreSQL 启动失败，日志如下："
+
+        if [[ -f "$data_dir/logfile" ]]; then
+          cat "$data_dir/logfile"
+        else
+          echo "日志文件不存在: $data_dir/logfile"
+        fi
+    }
+    
     initdb -D $data_dir -U $POSTGRES_USER
     echo "listen_addresses = 'localhost'" >> "$conf_file"
     echo "port = $PORT" >> "$conf_file"
+    trap on_fail ERR
     pg_ctl start -D $data_dir -l $data_dir/logfile
     
     psql -v ON_ERROR_STOP=1 -d template1 -U $POSTGRES_USER -p $PORT -c "DROP DATABASE postgres;"
