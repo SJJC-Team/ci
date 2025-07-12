@@ -149,9 +149,8 @@ jobs:
             done
 
             ./postgres.sh "${args[@]}"
-        
       - name: Build
-        working-directory: ${{ inputs.work_dir }}
+#        working-directory: ${{ inputs.work_dir }}
         run: |
           swift build \
             -c ${{ matrix.swift-config.build-mode }}
@@ -191,7 +190,7 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v4
       - name: Prepare PostgreSQL
-        working-directory: ${{ inputs.work_dir }}
+#        working-directory: ${{ inputs.work_dir }}
         if: ${{ inputs.with_pg_configs }}
         run: |
             cp .ci/.github/workflows/postgres.sh ./postgres.sh
