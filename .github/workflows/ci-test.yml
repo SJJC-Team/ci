@@ -13,7 +13,7 @@ jobs:
     uses: SJJC-Team/ci/.github/workflows/run-unit-tests.yml@develop
     with:
       ios_scheme_name: ci-testing
-      work_dir: "./ci-testing"
+      work_dir: "."
 
       with_api_check: false
       with_tsan: true
