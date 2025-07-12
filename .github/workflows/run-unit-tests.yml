@@ -153,6 +153,7 @@ jobs:
             
             pgconfigs=()
             while IFS= read -r line; do
+              [[ -z "$line" ]] && continue
               pgconfigs+=("$line")
             done <<< "${{ inputs.with_pg_configs }}"
 
@@ -218,6 +219,7 @@ jobs:
             
             pgconfigs=()
             while IFS= read -r line; do
+              [[ -z "$line" ]] && continue
               pgconfigs+=("$line")
             done <<< "${{ inputs.with_pg_configs }}"
 

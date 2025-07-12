@@ -23,10 +23,14 @@ shift 1
 for cfg in "$@"; do
     read POSTGRES_USER POSTGRES_DB POSTGRES_PASSWORD PORT DBS <<< "$cfg"
     
+    # 检查必要参数是否为空
+    if [[ -z "$POSTGRES_USER" || -z "$POSTGRES_DB" || -z "$POSTGRES_PASSWORD" || -z "$PORT" ]]; then
+        echo "❌ 缺少必要参数，跳过: $cfg"
+        continue
+    fi
+    
     data_dir="pg_${PORT}"
     conf_file="$data_dir/postgresql.conf"
-    
-    echo "initdb -D $data_dir -U $POSTGRES_USER"
     
     initdb -D $data_dir -U $POSTGRES_USER
     echo "listen_addresses = 'localhost'" >> "$conf_file"
