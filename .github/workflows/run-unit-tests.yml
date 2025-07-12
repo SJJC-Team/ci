@@ -133,6 +133,7 @@ jobs:
         
       - name: Download shared CI script
         uses: actions/checkout@v4
+        if: ${{ inputs.with_pg_configs }}
         with:
           repository: SJJC-Team/ci
           path: ${{ inputs.work_dir }}/.ci
@@ -140,6 +141,7 @@ jobs:
       - name: Prepare PostgreSQL
         working-directory: ${{ inputs.work_dir }}
         if: ${{ inputs.with_pg_configs }}
+        shell: bash
         run: |
             cp .ci/.github/workflows/postgres.sh ./postgres.sh
             chmod +x ./postgres.sh
@@ -197,12 +199,14 @@ jobs:
         uses: actions/checkout@v4
       - name: Download shared CI script
         uses: actions/checkout@v4
+        if: ${{ inputs.with_pg_configs }}
         with:
           repository: SJJC-Team/ci
           path: ${{ inputs.work_dir }}/.ci
       - name: Prepare PostgreSQL
         working-directory: ${{ inputs.work_dir }}
         if: ${{ inputs.with_pg_configs }}
+        shell: bash
         run: |
             cp .ci/.github/workflows/postgres.sh ./postgres.sh
             chmod +x ./postgres.sh
