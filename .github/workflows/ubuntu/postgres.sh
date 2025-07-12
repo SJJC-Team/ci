@@ -27,6 +27,8 @@ apt-get install postgresql-${1} postgresql-client-${1} -y
 
 export PATH="/usr/lib/postgresql/$1/bin:$PATH"
 
+chmod 777 "/var/run/postgresql"
+
 echo postgresql success installed
 
 psql --version
@@ -63,7 +65,7 @@ for cfg in "$@"; do
     su - pg_tester -c "env PATH=\"$PATH\" bash -c 'echo \"listen_addresses = '\''localhost'\''\" >> \"$conf_file\"'"
     su - pg_tester -c "env PATH=\"$PATH\" bash -c 'echo \"port = $PORT\" >> \"$conf_file\"'"
     trap on_fail ERR
-    su - pg_tester -c "env PATH=\"$PATH\" pg_ctl start -o \"-k $data_dir\" -D $data_dir -l $data_dir/logfile"
+    su - pg_tester -c "env PATH=\"$PATH\" pg_ctl start -D $data_dir -l $data_dir/logfile"
     
     psql -v ON_ERROR_STOP=1 -d template1 -U $POSTGRES_USER -p $PORT -c "DROP DATABASE postgres;"
     psql -v ON_ERROR_STOP=1 -d template1 -U $POSTGRES_USER -p $PORT -c "CREATE DATABASE $POSTGRES_DB;"
