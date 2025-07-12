@@ -15,7 +15,7 @@ on:
       with_pg_configs:
         type: string
         required: false
-        default: "postgres"
+        default: ''
         description: "Testing postgres configurations, parameters should be: \"user1 db1 pass1 6001 db2 db3 db4\" \"user2 db2 pass2 6002\" ..."
       package_root:
         type: string
@@ -138,14 +138,14 @@ jobs:
         
       - name: Download shared CI script
         uses: actions/checkout@v4
-        if: ${{ inputs.with_pg_configs }}
+        if: ${{ inputs.with_pg_configs != '' }}
         with:
           repository: SJJC-Team/ci
           path: ${{ inputs.work_dir }}/.ci
         
       - name: Prepare PostgreSQL
         working-directory: ${{ inputs.work_dir }}
-        if: ${{ inputs.with_pg_configs }}
+        if: ${{ inputs.with_pg_configs != '' }}
         shell: bash
         run: |
             cp .ci/.github/workflows/ubuntu/postgres.sh ./postgres.sh
@@ -161,8 +161,6 @@ jobs:
             for cfg in "${pgconfigs[@]}"; do
               args+=("$cfg")
             done
-            
-            
             
             ./postgres.sh ${{ inputs.with_pg_version }} "${args[@]}"
       - name: Build
@@ -207,13 +205,13 @@ jobs:
         uses: actions/checkout@v4
       - name: Download shared CI script
         uses: actions/checkout@v4
-        if: ${{ inputs.with_pg_configs }}
+        if: ${{ inputs.with_pg_configs != '' }}
         with:
           repository: SJJC-Team/ci
           path: ${{ inputs.work_dir }}/.ci
       - name: Prepare PostgreSQL
         working-directory: ${{ inputs.work_dir }}
-        if: ${{ inputs.with_pg_configs }}
+        if: ${{ inputs.with_pg_configs != '' }}
         shell: bash
         run: |
             cp .ci/.github/workflows/macos/postgres.sh ./postgres.sh
