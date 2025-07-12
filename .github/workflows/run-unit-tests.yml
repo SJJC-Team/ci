@@ -131,6 +131,12 @@ jobs:
         if: ${{ matrix.swift-config.build-mode == 'debug' || inputs.with_release_mode_testing }}
         uses: actions/checkout@v4
         
+      - name: Download shared CI script
+        uses: actions/checkout@v4
+        with:
+          repository: SJJC-Team/ci
+          path: ${{ inputs.work_dir }}/.ci
+        
       - name: Prepare PostgreSQL
         working-directory: ${{ inputs.work_dir }}
         if: ${{ inputs.with_pg_configs }}
@@ -150,7 +156,7 @@ jobs:
 
             ./postgres.sh "${args[@]}"
       - name: Build
-#        working-directory: ${{ inputs.work_dir }}
+        working-directory: ${{ inputs.work_dir }}
         run: |
           swift build \
             -c ${{ matrix.swift-config.build-mode }}
@@ -189,8 +195,13 @@ jobs:
           xcode-version: ${{ matrix.xcode-version }}
       - name: Check out code
         uses: actions/checkout@v4
+      - name: Download shared CI script
+        uses: actions/checkout@v4
+        with:
+          repository: SJJC-Team/ci
+          path: ${{ inputs.work_dir }}/.ci
       - name: Prepare PostgreSQL
-#        working-directory: ${{ inputs.work_dir }}
+        working-directory: ${{ inputs.work_dir }}
         if: ${{ inputs.with_pg_configs }}
         run: |
             cp .ci/.github/workflows/postgres.sh ./postgres.sh
