@@ -25,7 +25,7 @@ on:
       only_build:
         type: boolean
         required: false
-        default: true
+        default: false
         description: "True means only build, false means run test then."
       test_filter:
         type: string
