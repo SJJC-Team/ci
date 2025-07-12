@@ -24,6 +24,7 @@ jobs:
       extra_musl_flags: --target WhooshingClient
 
       only_build: false
+      with_pg_version: 17
       with_pg_configs: |
         testing testing 123456 5432 testing2
         user1 db1 pass1 5433

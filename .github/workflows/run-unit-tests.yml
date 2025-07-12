@@ -7,6 +7,11 @@ on:
         required: false
         default: '.'
         description: "Your main work directory."
+      with_pg_version:
+        type: number
+        required: false
+        default: 17
+        description: "PostgreSQL Version"
       with_pg_configs:
         type: string
         required: false
@@ -143,7 +148,7 @@ jobs:
         if: ${{ inputs.with_pg_configs }}
         shell: bash
         run: |
-            cp .ci/.github/workflows/postgres.sh ./postgres.sh
+            cp .ci/.github/workflows/ubuntu/postgres.sh ./postgres.sh
             chmod +x ./postgres.sh
             
             pgconfigs=()
@@ -156,7 +161,7 @@ jobs:
               args+=("$cfg")
             done
 
-            ./postgres.sh "${args[@]}"
+            ./postgres.sh ${{ inputs.with_pg_version }} "${args[@]}"
       - name: Build
         working-directory: ${{ inputs.work_dir }}
         run: |
@@ -208,8 +213,7 @@ jobs:
         if: ${{ inputs.with_pg_configs }}
         shell: bash
         run: |
-            brew install postgresql@17
-            cp .ci/.github/workflows/postgres.sh ./postgres.sh
+            cp .ci/.github/workflows/macos/postgres.sh ./postgres.sh
             chmod +x ./postgres.sh
             
             pgconfigs=()
@@ -222,7 +226,7 @@ jobs:
               args+=("$cfg")
             done
 
-            ./postgres.sh "${args[@]}"
+            ./postgres.sh ${{ inputs.with_pg_version }} "${args[@]}"
       - name: Build
         working-directory: ${{ inputs.work_dir }}
         run: |
