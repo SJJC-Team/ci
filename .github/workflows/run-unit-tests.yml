@@ -161,8 +161,11 @@ jobs:
             for cfg in "${pgconfigs[@]}"; do
               args+=("$cfg")
             done
+            
+            useradd -m -s /bin/bash pg_tester
+            usermod -aG sudo pg_tester
 
-            ./postgres.sh ${{ inputs.with_pg_version }} "${args[@]}"
+            sudo -u "pg_tester" bash ./postgres.sh ${{ inputs.with_pg_version }} "${args[@]}"
       - name: Build
         working-directory: ${{ inputs.work_dir }}
         run: |

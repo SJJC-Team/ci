@@ -18,8 +18,7 @@ curl -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc --fail https://
 sh -c "echo 'deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] https://apt.postgresql.org/pub/repos/apt $VERSION_CODENAME-pgdg main' > /etc/apt/sources.list.d/pgdg.list"
 
 apt-get update
-apt-get install postgresql-${1} -y
-apt-get install postgresql-client-${1} -y
+apt-get install postgresql-${1} postgresql-client-${1} -y
 
 export PATH="/usr/lib/postgresql/$1/bin:$PATH"
 
