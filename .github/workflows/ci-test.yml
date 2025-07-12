@@ -25,6 +25,6 @@ jobs:
 
       only_build: false
       with_pg_configs: |
-        "testing testing 123456 5432 testing2"
-        "user1 db1 pass1 5433"
+        testing testing 123456 5432 testing2
+        user1 db1 pass1 5433
     secrets: inherit
