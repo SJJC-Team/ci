@@ -162,6 +162,8 @@ jobs:
               args+=("$cfg")
             done
             
+            
+            
             ./postgres.sh ${{ inputs.with_pg_version }} "${args[@]}"
       - name: Build
         working-directory: ${{ inputs.work_dir }}

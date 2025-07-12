@@ -47,10 +47,10 @@ for cfg in "$@"; do
     data_dir="pg_${PORT}"
     conf_file="$data_dir/postgresql.conf"
     
-    su - pg_tester -c "initdb -D $data_dir -U $POSTGRES_USER"
-    su - pg_tester -c "echo \"listen_addresses = 'localhost'\" >> \"$conf_file\""
-    su - pg_tester -c "echo "port = $PORT" >> \"$conf_file\""
-    su - pg_tester -c "pg_ctl start -D $data_dir -l $data_dir/logfile"
+    su - pg_tester -c "env PATH=\"$PATH\" initdb -D $data_dir -U $POSTGRES_USER"
+    su - pg_tester -c "env PATH=\"$PATH\" bash -c 'echo \"listen_addresses = '\''localhost'\''\" >> \"$conf_file\"'"
+    su - pg_tester -c "env PATH=\"$PATH\" bash -c 'echo \"port = $PORT\" >> \"$conf_file\"'"
+    su - pg_tester -c "env PATH=\"$PATH\" pg_ctl start -D $data_dir -l $data_dir/logfile"
     
     psql -v ON_ERROR_STOP=1 -d template1 -U $POSTGRES_USER -p $PORT -c "DROP DATABASE postgres;"
     psql -v ON_ERROR_STOP=1 -d template1 -U $POSTGRES_USER -p $PORT -c "CREATE DATABASE $POSTGRES_DB;"
