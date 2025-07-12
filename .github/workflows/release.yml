@@ -15,7 +15,7 @@ on:
         default: "App"
         description: "App name used to package and release"
     secrets:
-      CLWANG_RELEASE_ACCESS:
+      RELEASE_ACCESS:
         required: true
 
 jobs:
@@ -59,7 +59,7 @@ jobs:
       - name: Upload binaries to GitHub Release
         uses: softprops/action-gh-release@v2
         env:
-          GITHUB_TOKEN: ${{ secrets.CLWANG_RELEASE_ACCESS }}
+          GITHUB_TOKEN: ${{ secrets.RELEASE_ACCESS }}
         with:
           files: |
             ${{ inputs.work_dir }}/release-macos/*.tar.gz
@@ -98,7 +98,7 @@ jobs:
       - name: Upload binaries to GitHub Release
         uses: softprops/action-gh-release@v2
         env:
-          GITHUB_TOKEN: ${{ secrets.CLWANG_RELEASE_ACCESS }}
+          GITHUB_TOKEN: ${{ secrets.RELEASE_ACCESS }}
         with:
           files: |
             ${{ inputs.work_dir }}/release-ubuntu/*.tar.gz
