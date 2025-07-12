@@ -25,7 +25,7 @@ export PATH="/usr/lib/postgresql/$VERSION/bin:$PATH"
 
 echo postgresql success installed
 
-which psql
+pg_config
 
 psql --version
 initdb --version
