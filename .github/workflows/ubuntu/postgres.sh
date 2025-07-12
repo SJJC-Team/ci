@@ -8,6 +8,11 @@ fi
 
 set -e
 
+echo create user pg_tester
+
+useradd -m -s /bin/bash pg_tester
+usermod -aG sudo pg_tester
+
 echo installing postgresql@${1}
 
 apt-get update
@@ -42,10 +47,10 @@ for cfg in "$@"; do
     data_dir="pg_${PORT}"
     conf_file="$data_dir/postgresql.conf"
     
-    initdb -D $data_dir -U $POSTGRES_USER
-    echo "listen_addresses = 'localhost'" >> "$conf_file"
-    echo "port = $PORT" >> "$conf_file"
-    pg_ctl start -D $data_dir -l $data_dir/logfile
+    su - pg_tester -c "initdb -D $data_dir -U $POSTGRES_USER"
+    su - pg_tester -c "echo \"listen_addresses = 'localhost'\" >> \"$conf_file\""
+    su - pg_tester -c "echo "port = $PORT" >> \"$conf_file\""
+    su - pg_tester -c "pg_ctl start -D $data_dir -l $data_dir/logfile"
     
     psql -v ON_ERROR_STOP=1 -d template1 -U $POSTGRES_USER -p $PORT -c "DROP DATABASE postgres;"
     psql -v ON_ERROR_STOP=1 -d template1 -U $POSTGRES_USER -p $PORT -c "CREATE DATABASE $POSTGRES_DB;"
