@@ -16,6 +16,7 @@ export PATH="/opt/homebrew/opt/postgresql@${1}/bin:$PATH"
 echo postgresql success installed
 
 pg_ctl --version
+initdb --version
 psql --version
 
 shift 1

@@ -25,7 +25,10 @@ export PATH="/usr/lib/postgresql/$VERSION/bin:$PATH"
 
 echo postgresql success installed
 
+which psql
+
 psql --version
+initdb --version
 pg_ctl --version
 
 shift 1
