@@ -21,13 +21,9 @@ apt-get update
 apt-get install postgresql-${1} -y
 apt-get install postgresql-client-${1} -y
 
-export PATH="/usr/lib/postgresql/$VERSION/bin:$PATH"
+export PATH="/usr/lib/postgresql/$1/bin:$PATH"
 
 echo postgresql success installed
-
-pg_config
-
-ls /usr/lib/postgresql/17/bin
 
 psql --version
 initdb --version
