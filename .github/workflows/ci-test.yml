@@ -13,7 +13,7 @@ jobs:
     uses: SJJC-Team/ci/.github/workflows/run-unit-tests.yml@develop
     with:
       ios_scheme_name: ci-testing
-      work_dir: "."
+      work_dir: "./ci-testing"
 
       with_api_check: false
       with_tsan: true
@@ -21,7 +21,7 @@ jobs:
       ios_xcodebuild_action: ''
 
       with_musl: true
-      extra_musl_flags: --target WhooshingClient
+      extra_musl_flags: --target ci-testing
 
       only_build: false
       with_pg_version: 17
