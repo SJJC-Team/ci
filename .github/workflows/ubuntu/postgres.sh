@@ -27,6 +27,8 @@ echo postgresql success installed
 
 pg_config
 
+ls /usr/lib/postgresql/17/bin
+
 psql --version
 initdb --version
 pg_ctl --version
