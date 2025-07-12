@@ -165,7 +165,9 @@ jobs:
             useradd -m -s /bin/bash pg_tester
             usermod -aG sudo pg_tester
 
-            sudo -u "pg_tester" bash ./postgres.sh ${{ inputs.with_pg_version }} "${args[@]}"
+            su - "pg_tester" <<'EOSU'
+            ./postgres.sh ${{ inputs.with_pg_version }} "${args[@]}"
+            EOSU
       - name: Build
         working-directory: ${{ inputs.work_dir }}
         run: |
