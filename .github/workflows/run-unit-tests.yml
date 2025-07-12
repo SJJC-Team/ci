@@ -127,6 +127,10 @@ jobs:
     timeout-minutes: 60
     
     steps:
+      - name: Check out code
+        if: ${{ matrix.swift-config.build-mode == 'debug' || inputs.with_release_mode_testing }}
+        uses: actions/checkout@v4
+        
       - name: Prepare PostgreSQL
         working-directory: ${{ inputs.work_dir }}
         if: ${{ inputs.with_pg_configs }}
@@ -145,9 +149,6 @@ jobs:
             done
 
             ./postgres.sh "${args[@]}"
-      - name: Check out code
-        if: ${{ matrix.swift-config.build-mode == 'debug' || inputs.with_release_mode_testing }}
-        uses: actions/checkout@v4
         
       - name: Build
         working-directory: ${{ inputs.work_dir }}
@@ -183,6 +184,12 @@ jobs:
     runs-on: ${{ matrix.macos-version }}
     timeout-minutes: 60
     steps:
+      - name: Select appropriate Xcode version
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: ${{ matrix.xcode-version }}
+      - name: Check out code
+        uses: actions/checkout@v4
       - name: Prepare PostgreSQL
         working-directory: ${{ inputs.work_dir }}
         if: ${{ inputs.with_pg_configs }}
@@ -201,12 +208,6 @@ jobs:
             done
 
             ./postgres.sh "${args[@]}"
-      - name: Select appropriate Xcode version
-        uses: maxim-lobanov/setup-xcode@v1
-        with:
-          xcode-version: ${{ matrix.xcode-version }}
-      - name: Check out code
-        uses: actions/checkout@v4
       - name: Build
         working-directory: ${{ inputs.work_dir }}
         run: |
