@@ -166,6 +166,7 @@ jobs:
             usermod -aG sudo pg_tester
 
             su - "pg_tester" <<'EOSU'
+            cd "$WORKDIR"
             ./postgres.sh ${{ inputs.with_pg_version }} "${args[@]}"
             EOSU
       - name: Build
