@@ -7,36 +7,11 @@ on:
         required: false
         default: '.'
         description: "Your main work directory."
-      with_pg_test:
-        type: boolean
-        required: false
-        default: true
-        description: "Lunch PostgreSQL service for testing"
-      with_pg_version:
-        type: string
-        required: false
-        default: "17.2"
-        description: "Test pg version"
-      with_pg_database:
+      with_pg_configs:
         type: string
         required: false
         default: "postgres"
-        description: "Test pg database"
-      with_pg_user:
-        type: string
-        required: false
-        default: "postgres"
-        description: "Test pg user"
-      with_pg_password:
-        type: string
-        required: false
-        default: "password"
-        description: "Test pg password"
-      with_pg_port:
-        type: string
-        required: false
-        default: "5432"
-        description: "Test pg port"
+        description: "Testing postgres configurations, parameters should be: \"user1 db1 pass1 6001 db2 db3 db4\" \"user2 db2 pass2 6002\" ..."
       package_root:
         type: string
         required: false
@@ -151,21 +126,22 @@ jobs:
     container: ${{ matrix.swift-config.image }}
     timeout-minutes: 60
     
-    services:
-      postgres:
-        image: postgres
-        env:
-          POSTGRES_PASSWORD: ${{ inputs.with_pg_password }}
-          POSTGRES_USER: ${{ inputs.with_pg_user }}
-          POSTGRES_DB: ${{ inputs.with_pg_database }}
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - ${{ inputs.with_pg_port }}:5432
     steps:
+      - name: Prepare PostgreSQL
+        working-directory: ${{ inputs.work_dir }}
+        if: ${{ inputs.with_pg_configs }}
+        run: |
+            pgconfigs=()
+            while IFS= read -r line; do
+              pgconfigs+=("$line")
+            done <<< "${{ inputs.with_pg_configs }}"
+
+            args=()
+            for cfg in "${pgconfigs[@]}"; do
+              args+=("$cfg")
+            done
+
+            .ci/.github/workflows/postgres.sh "${args[@]}"
       - name: Check out code
         if: ${{ matrix.swift-config.build-mode == 'debug' || inputs.with_release_mode_testing }}
         uses: actions/checkout@v4
@@ -176,10 +152,10 @@ jobs:
           swift build \
             -c ${{ matrix.swift-config.build-mode }}
       - name: Run unit tests
-        if: ${{ (inputs.with_pg_test || !inputs.only_build) && (matrix.swift-config.build-mode == 'debug' || inputs.with_release_mode_testing) }}
+        if: ${{ (!inputs.only_build) && (matrix.swift-config.build-mode == 'debug' || inputs.with_release_mode_testing) }}
         working-directory: ${{ inputs.work_dir }}
         run: |
-          GITHUB_PG_TESTING_HOST="postgres" \
+          GITHUB_PG_TESTING_HOST="localhost" \
           SWIFT_DETERMINISTIC_HASHING=1 \
           swift test \
             -c ${{ matrix.swift-config.build-mode }} \
@@ -204,6 +180,21 @@ jobs:
     runs-on: ${{ matrix.macos-version }}
     timeout-minutes: 60
     steps:
+      - name: Prepare PostgreSQL
+        working-directory: ${{ inputs.work_dir }}
+        if: ${{ inputs.with_pg_configs }}
+        run: |
+            pgconfigs=()
+            while IFS= read -r line; do
+              pgconfigs+=("$line")
+            done <<< "${{ inputs.with_pg_configs }}"
+
+            args=()
+            for cfg in "${pgconfigs[@]}"; do
+              args+=("$cfg")
+            done
+
+            .ci/.github/workflows/postgres.sh "${args[@]}"
       - name: Select appropriate Xcode version
         uses: maxim-lobanov/setup-xcode@v1
         with:
@@ -220,6 +211,7 @@ jobs:
         env:
           WITH_TSAN_MACOS: ${{ (inputs.with_tsan && matrix.macos-version != 'macos-14') && '--sanitize=thread' || '' }}
         run: |
+          GITHUB_PG_TESTING_HOST="localhost" \
           SWIFT_DETERMINISTIC_HASHING=1 \
           swift test \
             ${PACKAGE_ROOT} \

@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "69431201-874C-4E36-B425-49C4F622CEE4",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "ci-testingTests",
+        "name" : "ci-testingTests"
+      }
+    }
+  ],
+  "version" : 1
+}
