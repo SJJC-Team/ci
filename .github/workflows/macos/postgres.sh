@@ -26,6 +26,8 @@ for cfg in "$@"; do
     data_dir="pg_${PORT}"
     conf_file="$data_dir/postgresql.conf"
     
+    echo "initdb -D $data_dir -U $POSTGRES_USER"
+    
     initdb -D $data_dir -U $POSTGRES_USER
     echo "listen_addresses = 'localhost'" >> "$conf_file"
     echo "port = $PORT" >> "$conf_file"

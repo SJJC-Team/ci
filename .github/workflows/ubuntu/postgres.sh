@@ -10,15 +10,15 @@ set -e
 
 echo installing postgresql@${1}
 
-apt install curl ca-certificates
+apt-get install curl ca-certificates
 install -d /usr/share/postgresql-common/pgdg
 curl -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc --fail https://www.postgresql.org/media/keys/ACCC4CF8.asc
 . /etc/os-release
 sh -c "echo 'deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] https://apt.postgresql.org/pub/repos/apt $VERSION_CODENAME-pgdg main' > /etc/apt/sources.list.d/pgdg.list"
 
-apt update
-apt install postgresql-${1} -y
-apt install postgresql-client-${1} -y
+apt-get update
+apt-get install postgresql-${1} -y
+apt-get install postgresql-client-${1} -y
 
 export PATH="/usr/lib/postgresql/$VERSION/bin:$PATH"
 
