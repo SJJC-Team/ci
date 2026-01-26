@@ -260,7 +260,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Run iOS Tests
         working-directory: ${{ inputs.work_dir }}
-        run: xcodebuild ${IOS_XCODEBUILD_ACTION} -scheme ${IOS_SCHEME_NAME} -destination 'platform=iOS Simulator,OS=18.4,name=iPhone 16 Pro'
+        run: xcodebuild ${IOS_XCODEBUILD_ACTION} -scheme ${IOS_SCHEME_NAME} -destination 'platform=iOS Simulator,OS=18.5,name=iPhone 16 Pro'
 
   lint:
     if: ${{ inputs.with_linting }}
@@ -289,7 +289,7 @@ jobs:
   musl:
     if: ${{ !(github.event.pull_request.draft || false) && inputs.with_musl }}
     runs-on: ubuntu-latest
-    container: swift:noble
+    container: swift:6.2-noble
     timeout-minutes: 30
     steps:
       - name: Check out code
