@@ -289,7 +289,7 @@ jobs:
   musl:
     if: ${{ !(github.event.pull_request.draft || false) && inputs.with_musl }}
     runs-on: ubuntu-latest
-    container: swift:6.2-noble
+    container: swift:6.2.0-noble
     timeout-minutes: 30
     steps:
       - name: Check out code
