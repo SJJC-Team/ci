@@ -197,7 +197,10 @@ jobs:
 
             ./opa.sh ${{ inputs.with_opa_host }}:${{ inputs.with_opa_port }} ${{ inputs.with_opa_version }}
 
-            sleep 3
+            until curl -s http://${{ inputs.with_opa_host }}:${{ inputs.with_opa_port }}/health > /dev/null; do
+              echo "Waiting for OPA..."
+              sleep 1
+            done
       - name: Build
         working-directory: ${{ inputs.work_dir }}
         run: |
@@ -219,6 +222,10 @@ jobs:
             ${WITH_COVERAGE} \
             ${TEST_FILTER} \
             ${EXTRA_FLAGS}
+      - name: Print OPA logs on failure
+        if: ${{ failure() && inputs.with_opa_host != '' && inputs.with_opa_port != '' }}
+        working-directory: ${{ inputs.work_dir }}
+        run: cat opa.log
 
   macos-unit:
     if: ${{ !(github.event.pull_request.draft || false) }}
@@ -283,7 +290,10 @@ jobs:
 
             ./opa.sh ${{ inputs.with_opa_host }}:${{ inputs.with_opa_port }} ${{ inputs.with_opa_version }}
 
-            sleep 3
+            until curl -s http://${{ inputs.with_opa_host }}:${{ inputs.with_opa_port }}/health > /dev/null; do
+              echo "Waiting for OPA..."
+              sleep 1
+            done
       - name: Build
         working-directory: ${{ inputs.work_dir }}
         run: |
@@ -304,6 +314,10 @@ jobs:
             ${WITH_COVERAGE} \
             ${TEST_FILTER} \
             ${EXTRA_FLAGS}
+      - name: Print OPA logs on failure
+        if: ${{ failure() && inputs.with_opa_host != '' && inputs.with_opa_port != '' }}
+        working-directory: ${{ inputs.work_dir }}
+        run: cat opa.log
           
   ios-unit:
     if: ${{ !(github.event.pull_request.draft || false) && inputs.ios_scheme_name != '' }}
