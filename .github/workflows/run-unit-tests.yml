@@ -153,7 +153,7 @@ jobs:
         
       - name: Download shared CI script
         uses: actions/checkout@v4
-        if: ${{ inputs.with_pg_configs != '' }}
+        if: ${{ inputs.with_pg_configs != '' || (inputs.with_opa_host != '' && inputs.with_opa_port != '') }}
         with:
           repository: SJJC-Team/ci
           path: ${{ inputs.work_dir }}/.ci
@@ -232,7 +232,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Download shared CI script
         uses: actions/checkout@v4
-        if: ${{ inputs.with_pg_configs != '' }}
+        if: ${{ inputs.with_pg_configs != '' || (inputs.with_opa_host != '' && inputs.with_opa_port != '') }}
         with:
           repository: SJJC-Team/ci
           path: ${{ inputs.work_dir }}/.ci
