@@ -31,6 +31,6 @@ fi
 
 sudo chmod +x opa
 
-./opa run --server --addr $ADDR
+./opa run --server --addr $ADDR &
 
 echo "OPA 初始化 完成"
