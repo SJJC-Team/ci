@@ -48,7 +48,7 @@ import Foundation
     #if os(macOS)
     let res = try Sh.run("lsof -i:8282")
     #else
-    let res = try Sh.run("ss -ant | grep 8282")
+    let res = try Sh.run("(echo > /dev/tcp/localhost/8282) >/dev/null 2>&1 && exit 0 || exit 1")
     #endif
     
     if let res = String(data: res.res, encoding: .utf8) {
