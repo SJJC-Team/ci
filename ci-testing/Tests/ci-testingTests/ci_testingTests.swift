@@ -43,3 +43,13 @@ import Foundation
     
     #expect(res.code == 0)
 }
+
+@Test func checkOPAServer() async throws {
+    let res = try Sh.run("lsof -i:8282")
+    
+    if let res = String(data: res.res, encoding: .utf8) {
+        print(res)
+    }
+    
+    #expect(res.code == 0)
+}
