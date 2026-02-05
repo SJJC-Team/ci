@@ -45,7 +45,11 @@ import Foundation
 }
 
 @Test func checkOPAServer() async throws {
+    #if os(macOS)
     let res = try Sh.run("lsof -i:8282")
+    #else
+    let res = try Sh.run("netstat -tlnp | grep :8282")
+    #endif
     
     if let res = String(data: res.res, encoding: .utf8) {
         print(res)
