@@ -87,6 +87,11 @@ on:
         required: false
         default: 'test'
         description: "Action to pass to xcodebuild when running iOS tests. Defaults to 'test'. Set to '' to just compile and not run tests."
+      with_opa_config:
+        type: string
+        required: false
+        default: ''
+        description: "OPA configuration, parameters should be: \"addr version\""
     secrets:
       CODECOV_TOKEN:
         required: false
@@ -163,6 +168,15 @@ jobs:
             done
             
             ./postgres.sh ${{ inputs.with_pg_version }} "${args[@]}"
+      - name: Prepare OPA
+        working-directory: ${{ inputs.work_dir }}
+        if: ${{ inputs.with_opa_config != '' }}
+        shell: bash
+        run: |
+            cp .ci/.github/workflows/ubuntu/opa.sh ./opa.sh
+            chmod +x ./opa.sh
+
+            ./opa.sh ${{ inputs.with_opa_config }}
       - name: Build
         working-directory: ${{ inputs.work_dir }}
         run: |
@@ -229,6 +243,15 @@ jobs:
             done
 
             ./postgres.sh ${{ inputs.with_pg_version }} "${args[@]}"
+      - name: Prepare OPA
+        working-directory: ${{ inputs.work_dir }}
+        if: ${{ inputs.with_opa_config != '' }}
+        shell: bash
+        run: |
+            cp .ci/.github/workflows/macos/opa.sh ./opa.sh
+            chmod +x ./opa.sh
+
+            ./opa.sh ${{ inputs.with_opa_config }}
       - name: Build
         working-directory: ${{ inputs.work_dir }}
         run: |

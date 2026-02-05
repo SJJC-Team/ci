@@ -42,7 +42,7 @@ for cfg in "$@"; do
     
     # 检查必要参数是否为空
     if [[ -z "$POSTGRES_USER" || -z "$POSTGRES_DB" || -z "$POSTGRES_PASSWORD" || -z "$PORT" ]]; then
-        echo "❌ 缺少必要参数，跳过: $cfg"
+        echo "缺少必要参数，跳过: $cfg"
         continue
     fi
     
@@ -50,7 +50,7 @@ for cfg in "$@"; do
     conf_file="$data_dir/postgresql.conf"
     
     function on_fail {
-        echo "⚠️ PostgreSQL 启动失败，日志如下："
+        echo "PostgreSQL 启动失败，日志如下："
 
         su - pg_tester -c "bash -c '
         if [[ -f \"$data_dir/logfile\" ]]; then
