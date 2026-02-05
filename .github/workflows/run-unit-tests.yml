@@ -87,11 +87,21 @@ on:
         required: false
         default: 'test'
         description: "Action to pass to xcodebuild when running iOS tests. Defaults to 'test'. Set to '' to just compile and not run tests."
-      with_opa_config:
+      with_opa_host:
         type: string
         required: false
         default: ''
-        description: "OPA configuration, parameters should be: \"addr version\""
+        description: "OPA host"
+      with_opa_port:
+        type: string
+        required: false
+        default: ''
+        description: "OPA port"
+      with_opa_version:
+        type: string
+        required: false
+        default: ''
+        description: "OPA version"
     secrets:
       CODECOV_TOKEN:
         required: false
@@ -170,13 +180,13 @@ jobs:
             ./postgres.sh ${{ inputs.with_pg_version }} "${args[@]}"
       - name: Prepare OPA
         working-directory: ${{ inputs.work_dir }}
-        if: ${{ inputs.with_opa_config != '' }}
+        if: ${{ inputs.with_opa_host != '' && inputs.with_opa_port != '' }}
         shell: bash
         run: |
             cp .ci/.github/workflows/ubuntu/opa.sh ./opa.sh
             chmod +x ./opa.sh
 
-            ./opa.sh ${{ inputs.with_opa_config }}
+            ./opa.sh ${{ inputs.with_opa_host }}:${{ inputs.with_opa_port }} ${{ inputs.with_opa_version }}
       - name: Build
         working-directory: ${{ inputs.work_dir }}
         run: |
@@ -186,7 +196,8 @@ jobs:
         if: ${{ (!inputs.only_build) && (matrix.swift-config.build-mode == 'debug' || inputs.with_release_mode_testing) }}
         working-directory: ${{ inputs.work_dir }}
         run: |
-          GITHUB_PG_TESTING_HOST="localhost" \
+          GITHUB_OPA_TESTING_HOST=${{ inputs.with_opa_host }} \
+          GITHUB_OPA_TESTING_PORT=${{ inputs.with_opa_port }} \
           SWIFT_DETERMINISTIC_HASHING=1 \
           swift test \
             -c ${{ matrix.swift-config.build-mode }} \
@@ -245,13 +256,13 @@ jobs:
             ./postgres.sh ${{ inputs.with_pg_version }} "${args[@]}"
       - name: Prepare OPA
         working-directory: ${{ inputs.work_dir }}
-        if: ${{ inputs.with_opa_config != '' }}
+        if: ${{ inputs.with_opa_host != '' && inputs.with_opa_port != '' }}
         shell: bash
         run: |
             cp .ci/.github/workflows/macos/opa.sh ./opa.sh
             chmod +x ./opa.sh
 
-            ./opa.sh ${{ inputs.with_opa_config }}
+            ./opa.sh ${{ inputs.with_opa_host }}:${{ inputs.with_opa_port }} ${{ inputs.with_opa_version }}
       - name: Build
         working-directory: ${{ inputs.work_dir }}
         run: |
@@ -262,6 +273,8 @@ jobs:
         env:
           WITH_TSAN_MACOS: ${{ (inputs.with_tsan && matrix.macos-version != 'macos-14') && '--sanitize=thread' || '' }}
         run: |
+          GITHUB_OPA_TESTING_HOST=${{ inputs.with_opa_host }} \
+          GITHUB_OPA_TESTING_PORT=${{ inputs.with_opa_port }} \
           GITHUB_PG_TESTING_HOST="localhost" \
           SWIFT_DETERMINISTIC_HASHING=1 \
           swift test \
