@@ -15,8 +15,6 @@ usermod -aG sudo pg_tester
 
 echo installing postgresql@${1}
 
-apt-get update
-apt-get install curl ca-certificates -y
 install -d /usr/share/postgresql-common/pgdg
 curl -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc --fail https://www.postgresql.org/media/keys/ACCC4CF8.asc
 . /etc/os-release

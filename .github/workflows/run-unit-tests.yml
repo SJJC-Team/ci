@@ -157,6 +157,15 @@ jobs:
         with:
           repository: SJJC-Team/ci
           path: ${{ inputs.work_dir }}/.ci
+      
+      - name: Init System
+        working-directory: ${{ inputs.work_dir }}
+        if: ${{ inputs.with_pg_configs != '' || (inputs.with_opa_host != '' && inputs.with_opa_port != '') }}
+        shell: bash
+        run: |
+            cp .ci/.github/workflows/ubuntu/init.sh ./init.sh
+            chmod +x ./init.sh
+            ./init.sh
         
       - name: Prepare PostgreSQL
         working-directory: ${{ inputs.work_dir }}
@@ -236,6 +245,14 @@ jobs:
         with:
           repository: SJJC-Team/ci
           path: ${{ inputs.work_dir }}/.ci
+      - name: Init System
+        working-directory: ${{ inputs.work_dir }}
+        if: ${{ inputs.with_pg_configs != '' || (inputs.with_opa_host != '' && inputs.with_opa_port != '') }}
+        shell: bash
+        run: |
+            cp .ci/.github/workflows/macos/init.sh ./init.sh
+            chmod +x ./init.sh
+            ./init.sh
       - name: Prepare PostgreSQL
         working-directory: ${{ inputs.work_dir }}
         if: ${{ inputs.with_pg_configs != '' }}
