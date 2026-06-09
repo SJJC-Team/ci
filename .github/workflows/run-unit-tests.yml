@@ -385,6 +385,7 @@ jobs:
         with: { package_root: "${{ inputs.work_dir }}" }
       - name: Run iOS Tests
         if: ${{ steps.swift-check.outputs.swift-compatible == 'true' }}
+        working-directory: ${{ inputs.work_dir }}
         run: |
           name="$(xcrun simctl list -j -e devices | jq -r '[.devices | to_entries[] | select(.key | contains(".iOS-"))] | sort_by(.key) | last | .value | first | .name')"
           echo "Using '${name}' as destination"
