@@ -139,9 +139,10 @@ jobs:
       matrix:
         swift-config:
           - { image: "swift:6.0-noble", "build-mode": "debug" }
-          - { image: "swift:6.0-noble", "build-mode": "release" }
           - { image: "swift:6.1-noble", "build-mode": "debug" }
-          - { image: "swift:6.1-noble", "build-mode": "release" }
+          - { image: "swift:6.2-noble", "build-mode": "debug" }
+          - { image: "swift:6.3-noble", "build-mode": "debug" }
+          - { image: "swift:6.3-noble", "build-mode": "release" }
     runs-on: ubuntu-latest
     container: ${{ matrix.swift-config.image }}
     timeout-minutes: 60
@@ -233,9 +234,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - macos-version: macos-14
-            xcode-version: latest-stable
           - macos-version: macos-15
+            xcode-version: latest-stable
+          - macos-version: macos-26
             xcode-version: latest-stable
     runs-on: ${{ matrix.macos-version }}
     timeout-minutes: 60
