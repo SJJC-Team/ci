@@ -97,18 +97,24 @@ on:
         required: false
         default: ''
         description: "EOPA version"
+      enable_all_traits:
+        type: boolean
+        required: false
+        default: false
+        description: "Set to 'false' to enable only default traits when running tests. Defaults to 'false'. Doesn't have any effect on the disabled-traits-unit job."
     secrets:
       CODECOV_TOKEN:
         required: false
 env:
   WITH_TESTING: ${{ inputs.with_testing && '-Xswiftc -enable-testing' || '' }}
-  EXTRA_FLAGS:  ${{ inputs.extra_flags }}
+  EXTRA_FLAGS:  ${{ inputs.extra_flags || '--explicit-target-dependency-import-check error -Xswiftc -require-explicit-sendable' }}
   EXTRA_MUSL_FLAGS: ${{ inputs.extra_musl_flags }}
   WITH_TSAN: ${{ inputs.with_tsan && '--sanitize=thread' || '' }}
   WARNINGS_AS_ERRORS: ${{ inputs.warnings_as_errors && '-Xswiftc -warnings-as-errors' || '' }}
   TEST_FILTER:  ${{ inputs.test_filter != '' && format('--filter={0}', inputs.test_filter) || '' }}
   IOS_SCHEME_NAME: ${{ inputs.ios_scheme_name }}
   IOS_XCODEBUILD_ACTION: ${{ inputs.ios_xcodebuild_action }}
+  ENABLE_ALL_TRAITS: ${{ inputs.enable_all_traits && '--enable-all-traits' || '' }}
 
 jobs:
   api-breakage:
@@ -252,6 +258,7 @@ jobs:
             ${WARNINGS_AS_ERRORS} \
             ${WITH_COVERAGE} \
             ${TEST_FILTER} \
+            ${ENABLE_ALL_TRAITS} \
             ${EXTRA_FLAGS}
       - name: Print EOPA logs on failure
         if: ${{ failure() && inputs.with_eopa_host != '' && inputs.with_eopa_port != '' }}
@@ -355,6 +362,7 @@ jobs:
             ${WITH_TSAN_MACOS} \
             ${WITH_COVERAGE} \
             ${TEST_FILTER} \
+            ${ENABLE_ALL_TRAITS} \
             ${EXTRA_FLAGS}
       - name: Print EOPA logs on failure
         if: ${{ steps.swift-check.outputs.swift-compatible == 'true' && failure() && inputs.with_eopa_host != '' && inputs.with_eopa_port != '' }}
