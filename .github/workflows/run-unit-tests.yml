@@ -286,7 +286,7 @@ jobs:
         uses: actions/checkout@v6
       - name: Check Swift compatibility
         id: swift-check
-        uses: whooshing-workshop/ci/.github/actions/check-compatible-swift@15f8aff92cac6deb62a9f5891606a3167d76df28
+        uses: whooshing-workshop/ci/.github/actions/check-compatible-swift@develop
         with: { package_root: "${{ inputs.package_root }}" }
       - name: Cache .build
         if: steps.swift-check.outputs.swift-compatible == 'true'

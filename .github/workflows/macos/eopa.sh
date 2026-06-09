@@ -4,6 +4,9 @@
 ADDR="${1:-0.0.0.0:8181}"
 VERSION="${2:-v1.45.1}"
 
+# 1. 开启严格模式：任何命令失败 (-e)、引用未定义变量 (-u) 都会直接崩掉退出，不再往下走
+set -eu
+
 # 检测架构
 ARCH=$(uname -m)
 if [ "$ARCH" = "x86_64" ]; then
@@ -22,7 +25,7 @@ DOWNLOAD_URL="https://github.com/open-policy-agent/eopa/releases/download/${VERS
 echo "正在下载 EOPA ${VERSION} (${ARCH})..."
 echo "URL: ${DOWNLOAD_URL}"
 
-curl -L -o eopa "${DOWNLOAD_URL}"
+curl -f -L -o eopa "${DOWNLOAD_URL}"
 
 if [ $? -ne 0 ]; then
     echo "下载失败"
