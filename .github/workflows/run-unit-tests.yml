@@ -427,4 +427,5 @@ jobs:
           checksum="$(echo "$sdk_info" | cut -f2)"
           swift sdk install "https://download.swift.org/$(echo $tag | tr [A-Z] [a-z])/static-sdk/$tag/${tag}_static-linux-${version}.artifactbundle.tar.gz" --checksum "$checksum"
       - name: Build
+        working-directory: ${{ inputs.work_dir }}
         run: swift build --swift-sdk x86_64-swift-linux-musl ${PACKAGE_PATH} ${EXTRA_FLAGS} ${EXTRA_MUSL_FLAGS} ${WARNINGS_AS_ERRORS} ${ENABLE_ALL_TRAITS}
