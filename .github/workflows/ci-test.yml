@@ -28,7 +28,7 @@ jobs:
         testing testing 123456 5432 testing2
         user1 db1 pass1 5433
 
-      with_opa_host: "localhost"
-      with_opa_port: 8282
-      with_opa_version: v1.13.1
+      with_eopa_host: "localhost"
+      with_eopa_port: 8282
+      with_eopa_version: v1.13.1
     secrets: inherit
