@@ -379,7 +379,12 @@ jobs:
           xcode-version: latest-stable
       - name: Check out code
         uses: actions/checkout@v6
+      - name: Check Swift compatibility
+        id: swift-check
+        uses: whooshing-workshop/ci/.github/actions/check-compatible-swift@develop
+        with: { package_root: "${{ inputs.work_dir }}" }
       - name: Run iOS Tests
+        if: ${{ steps.swift-check.outputs.swift-compatible == 'true' }}
         run: |
           name="$(xcrun simctl list -j -e devices | jq -r '[.devices | to_entries[] | select(.key | contains(".iOS-"))] | sort_by(.key) | last | .value | first | .name')"
           echo "Using '${name}' as destination"
