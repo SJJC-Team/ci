@@ -331,7 +331,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Run iOS Tests
         working-directory: ${{ inputs.work_dir }}
-        run: xcodebuild ${IOS_XCODEBUILD_ACTION} -scheme ${IOS_SCHEME_NAME} -destination 'platform=iOS,id=dvtdevice-DVTiPhonePlaceholder-iphoneos:placeholder,name=Any iOS Device'
+        run: xcodebuild ${IOS_XCODEBUILD_ACTION} -scheme ${IOS_SCHEME_NAME} -destination 'platform=iOS Simulator'
 
   lint:
     if: ${{ inputs.with_linting }}
