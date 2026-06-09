@@ -87,21 +87,21 @@ on:
         required: false
         default: 'test'
         description: "Action to pass to xcodebuild when running iOS tests. Defaults to 'test'. Set to '' to just compile and not run tests."
-      with_opa_host:
+      with_eopa_host:
         type: string
         required: false
         default: ''
-        description: "OPA host"
-      with_opa_port:
+        description: "EOPA host"
+      with_eopa_port:
         type: string
         required: false
         default: ''
-        description: "OPA port"
-      with_opa_version:
+        description: "EOPA port"
+      with_eopa_version:
         type: string
         required: false
         default: ''
-        description: "OPA version"
+        description: "EOPA version"
     secrets:
       CODECOV_TOKEN:
         required: false
@@ -153,14 +153,14 @@ jobs:
         
       - name: Download shared CI script
         uses: actions/checkout@v4
-        if: ${{ inputs.with_pg_configs != '' || (inputs.with_opa_host != '' && inputs.with_opa_port != '') }}
+        if: ${{ inputs.with_pg_configs != '' || (inputs.with_eopa_host != '' && inputs.with_eopa_port != '') }}
         with:
           repository: SJJC-Team/ci
           path: ${{ inputs.work_dir }}/.ci
       
       - name: Init System
         working-directory: ${{ inputs.work_dir }}
-        if: ${{ inputs.with_pg_configs != '' || (inputs.with_opa_host != '' && inputs.with_opa_port != '') }}
+        if: ${{ inputs.with_pg_configs != '' || (inputs.with_eopa_host != '' && inputs.with_eopa_port != '') }}
         shell: bash
         run: |
             cp .ci/.github/workflows/ubuntu/init.sh ./init.sh
@@ -187,18 +187,18 @@ jobs:
             done
             
             ./postgres.sh ${{ inputs.with_pg_version }} "${args[@]}"
-      - name: Prepare OPA
+      - name: Prepare EOPA
         working-directory: ${{ inputs.work_dir }}
-        if: ${{ inputs.with_opa_host != '' && inputs.with_opa_port != '' }}
+        if: ${{ inputs.with_eopa_host != '' && inputs.with_eopa_port != '' }}
         shell: bash
         run: |
-            cp .ci/.github/workflows/ubuntu/opa.sh ./opa.sh
-            chmod +x ./opa.sh
+            cp .ci/.github/workflows/ubuntu/eopa.sh ./eopa.sh
+            chmod +x ./eopa.sh
 
-            ./opa.sh ${{ inputs.with_opa_host }}:${{ inputs.with_opa_port }} ${{ inputs.with_opa_version }}
+            ./eopa.sh ${{ inputs.with_eopa_host }}:${{ inputs.with_eopa_port }} ${{ inputs.with_eopa_version }}
 
-            until curl -s http://${{ inputs.with_opa_host }}:${{ inputs.with_opa_port }}/health > /dev/null; do
-              echo "Waiting for OPA..."
+            until curl -s http://${{ inputs.with_eopa_host }}:${{ inputs.with_eopa_port }}/health > /dev/null; do
+              echo "Waiting for EOPA..."
               sleep 1
             done
       - name: Build
@@ -210,8 +210,8 @@ jobs:
         if: ${{ (!inputs.only_build) && (matrix.swift-config.build-mode == 'debug' || inputs.with_release_mode_testing) }}
         working-directory: ${{ inputs.work_dir }}
         run: |
-          GITHUB_OPA_TESTING_HOST=${{ inputs.with_opa_host }} \
-          GITHUB_OPA_TESTING_PORT=${{ inputs.with_opa_port }} \
+          GITHUB_EOPA_TESTING_HOST=${{ inputs.with_eopa_host }} \
+          GITHUB_EOPA_TESTING_PORT=${{ inputs.with_eopa_port }} \
           SWIFT_DETERMINISTIC_HASHING=1 \
           swift test \
             -c ${{ matrix.swift-config.build-mode }} \
@@ -222,10 +222,10 @@ jobs:
             ${WITH_COVERAGE} \
             ${TEST_FILTER} \
             ${EXTRA_FLAGS}
-      - name: Print OPA logs on failure
-        if: ${{ failure() && inputs.with_opa_host != '' && inputs.with_opa_port != '' }}
+      - name: Print EOPA logs on failure
+        if: ${{ failure() && inputs.with_eopa_host != '' && inputs.with_eopa_port != '' }}
         working-directory: ${{ inputs.work_dir }}
-        run: cat opa.log
+        run: cat eopa.log
 
   macos-unit:
     if: ${{ !(github.event.pull_request.draft || false) }}
@@ -248,13 +248,13 @@ jobs:
         uses: actions/checkout@v4
       - name: Download shared CI script
         uses: actions/checkout@v4
-        if: ${{ inputs.with_pg_configs != '' || (inputs.with_opa_host != '' && inputs.with_opa_port != '') }}
+        if: ${{ inputs.with_pg_configs != '' || (inputs.with_eopa_host != '' && inputs.with_eopa_port != '') }}
         with:
           repository: SJJC-Team/ci
           path: ${{ inputs.work_dir }}/.ci
       - name: Init System
         working-directory: ${{ inputs.work_dir }}
-        if: ${{ inputs.with_pg_configs != '' || (inputs.with_opa_host != '' && inputs.with_opa_port != '') }}
+        if: ${{ inputs.with_pg_configs != '' || (inputs.with_eopa_host != '' && inputs.with_eopa_port != '') }}
         shell: bash
         run: |
             cp .ci/.github/workflows/macos/init.sh ./init.sh
@@ -280,18 +280,18 @@ jobs:
             done
 
             ./postgres.sh ${{ inputs.with_pg_version }} "${args[@]}"
-      - name: Prepare OPA
+      - name: Prepare EOPA
         working-directory: ${{ inputs.work_dir }}
-        if: ${{ inputs.with_opa_host != '' && inputs.with_opa_port != '' }}
+        if: ${{ inputs.with_eopa_host != '' && inputs.with_eopa_port != '' }}
         shell: bash
         run: |
-            cp .ci/.github/workflows/macos/opa.sh ./opa.sh
-            chmod +x ./opa.sh
+            cp .ci/.github/workflows/macos/eopa.sh ./eopa.sh
+            chmod +x ./eopa.sh
 
-            ./opa.sh ${{ inputs.with_opa_host }}:${{ inputs.with_opa_port }} ${{ inputs.with_opa_version }}
+            ./eopa.sh ${{ inputs.with_eopa_host }}:${{ inputs.with_eopa_port }} ${{ inputs.with_eopa_version }}
 
-            until curl -s http://${{ inputs.with_opa_host }}:${{ inputs.with_opa_port }}/health > /dev/null; do
-              echo "Waiting for OPA..."
+            until curl -s http://${{ inputs.with_eopa_host }}:${{ inputs.with_eopa_port }}/health > /dev/null; do
+              echo "Waiting for EOPA..."
               sleep 1
             done
       - name: Build
@@ -304,8 +304,8 @@ jobs:
         env:
           WITH_TSAN_MACOS: ${{ (inputs.with_tsan && matrix.macos-version != 'macos-14') && '--sanitize=thread' || '' }}
         run: |
-          GITHUB_OPA_TESTING_HOST=${{ inputs.with_opa_host }} \
-          GITHUB_OPA_TESTING_PORT=${{ inputs.with_opa_port }} \
+          GITHUB_EOPA_TESTING_HOST=${{ inputs.with_eopa_host }} \
+          GITHUB_EOPA_TESTING_PORT=${{ inputs.with_eopa_port }} \
           GITHUB_PG_TESTING_HOST="localhost" \
           SWIFT_DETERMINISTIC_HASHING=1 \
           swift test \
@@ -314,10 +314,10 @@ jobs:
             ${WITH_COVERAGE} \
             ${TEST_FILTER} \
             ${EXTRA_FLAGS}
-      - name: Print OPA logs on failure
-        if: ${{ failure() && inputs.with_opa_host != '' && inputs.with_opa_port != '' }}
+      - name: Print EOPA logs on failure
+        if: ${{ failure() && inputs.with_eopa_host != '' && inputs.with_eopa_port != '' }}
         working-directory: ${{ inputs.work_dir }}
-        run: cat opa.log
+        run: cat eopa.log
           
   ios-unit:
     if: ${{ !(github.event.pull_request.draft || false) && inputs.ios_scheme_name != '' }}
