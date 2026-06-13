@@ -392,7 +392,8 @@ jobs:
           xcodebuild ${IOS_XCODEBUILD_ACTION} -scheme ${IOS_SCHEME_NAME} -destination "platform=iOS Simulator,name=${name}" \
           CODE_SIGNING_ALLOWED=NO \
           CODE_SIGN_STYLE=Manual \
-          CODE_SIGN_IDENTITY=""
+          CODE_SIGN_IDENTITY="" \
+          DISABLE_SANDBOX_BUILD=YES
 
   lint:
     if: ${{ inputs.with_linting }}
